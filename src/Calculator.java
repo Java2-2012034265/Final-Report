@@ -89,9 +89,7 @@ public class Calculator extends JFrame {
 			pad.add(p[i]);
 		
 		add(pad, BorderLayout.CENTER);
-		
         pack();
-        
 		setVisible(true);
 	}
 	
