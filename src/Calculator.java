@@ -1,7 +1,10 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
-public class Calculator extends JFrame {
+public class Calculator extends JFrame implements ActionListener {
 	
 
 	public JTextField text;
@@ -40,6 +43,7 @@ public class Calculator extends JFrame {
 		
 		for (int i = 0; i < 10; i++) {
 			operator[i].setPreferredSize(d);
+			operator[i].addActionListener(this);
 		}
 		
 		JPanel[] p = new JPanel[4];
@@ -53,6 +57,7 @@ public class Calculator extends JFrame {
 		for (int i = 0; i < 10; i++) {
 			button[i] = new JButton(i+"");
 			button[i].setPreferredSize(d);
+			button[i].addActionListener(this);
 		}
 		
 		p[0].add(button[7]);
@@ -95,6 +100,84 @@ public class Calculator extends JFrame {
 	
 	public static void main(String[] args) {
 		new Calculator();
+	}
+	public String cal() {
+		
+		String result = "";
+		if(operator.equals("+")) {
+			operand1 += operand2;
+			result = operand1 + "";
+		} else if(operator == "-") {
+			operand1 -= operand2;
+			result = operand1 + "";
+		} else if(operator == "*") {
+			operand1 *= operand2;
+			result = operand1 + "";
+		} else if(operator == "/") {
+			if (operand2 != 0) {
+				operand1 /= operand2;
+				result = operand1 + "";
+			} else {
+				result = "NaN";
+			}
+		}
+		
+		if (result.endsWith(".0")) {
+			result = result.substring(0, result.length()-2);
+		}
+		return result;
+	}
+	
+	public void cal(String op) {
+		
+		if (text.getText().equals("") || text.getText() == null)
+			return;
+		
+		if (operator.equals("")) {
+		
+			operand1 = Double.parseDouble(text.getText());
+			operator = op;
+			text.setText("");
+		} else {
+		
+			operand2 = Double.parseDouble(text.getText());
+			text.setText(cal());
+			operator = op;
+			mode = true;
+		}
+	}
+	
+	public void actionPerformed(ActionEvent ae) {
+		String cmd = ae.getActionCommand();
+		if(cmd.equals("+") || cmd.equals("-") || cmd.equals("*") || cmd.equals("/")) {
+			cal(cmd);
+		} else if (cmd.equals("=")) {
+			if (operator.equals(""))
+				return;
+			operand2 = Double.parseDouble(text.getText());			
+			text.setText(cal());
+
+			operand1 = 0;
+			operand2 = 0;
+			operator = "";			
+			mode = true;
+		} else if (cmd.equals("C")) {
+			operand1 = 0;
+			operand2 = 0;
+			operator = "";
+			text.setText("0");
+		} else {
+			if (mode == true) {
+				mode = false;
+				text.setText(cmd);
+			} else  {
+				if (text.getText().equals("0")) {
+					text.setText(cmd);
+				} else {
+					text.setText(text.getText() + cmd);
+				}
+			}
+		}
 	}
 }
 	
